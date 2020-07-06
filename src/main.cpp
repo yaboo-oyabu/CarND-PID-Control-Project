@@ -37,7 +37,8 @@ int main() {
   /**
    * TODO: Initialize the pid variable.
    */
-  pid.Init(0.1, 0.002, 1.8);
+  // pid.Init(0.1, 0.002, 1.8);
+  pid.Init(0.09, 0.0, 1.35);
 
   h.onMessage([&pid](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, 
                      uWS::OpCode opCode) {
@@ -65,7 +66,8 @@ int main() {
            *   Maybe use another PID controller to control the speed!
            */
           pid.UpdateError(cte);
-          steer_value = -pid.TotalError();
+
+          steer_value = pid.GetSteerValue();
           if (steer_value > 1.0) {
             steer_value = 1.0;
           } else if (steer_value < -1.0) {
@@ -73,14 +75,23 @@ int main() {
           }
 
           // DEBUG
-          std::cout << "CTE: " << cte << " Steering Value: " << steer_value 
-                    << std::endl;
+          // std::cout << "[" << pid.ticks << "]"
+          //           << " CTE: " << cte
+          //           << " Steering Value: " << steer_value
+          //           << " Total Error: " << pid.TotalError()
+          //           << std::endl;
+
+          if (pid.ticks % 500 == 0) {
+            pid.ShowResult();
+          }
+
+          pid.ticks++;
 
           json msgJson;
           msgJson["steering_angle"] = steer_value;
           msgJson["throttle"] = 0.3;
           auto msg = "42[\"steer\"," + msgJson.dump() + "]";
-          std::cout << msg << std::endl;
+          // std::cout << msg << std::endl;
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
         }  // end "telemetry" if
       } else {
