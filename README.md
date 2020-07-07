@@ -100,13 +100,10 @@ A well written README file can enhance your project and portfolio.  Develop your
 
 ### Describe the effect each of the P, I, D components had in your implementation
 
-First of all, PID controller in my implementation uses the following equation to calculate next steering angle in radian:
+First of all, PID controller in my implementation uses the following equation to calculate the ego's next steering angle in radian:
 
-<img src="https://latex.codecogs.com/gif.latex?Steer&space;=&space;-(\tau_pCTE&space;+&space;\tau_i\Sigma{CTE}&space;+&space;\tau_d\frac{d}{dt}CTE)"/>
+<img src="https://latex.codecogs.com/gif.latex?Steer&space;=&space;-&space;\tau_pCTE&space;-&space;\tau_i\Sigma{CTE}&space;-&space;\tau_d\frac{d}{dt}CTE"/>
 
-
-* P: <img src="https://latex.codecogs.com/gif.latex?\inline&space;-\tau_pCTE" />
-* I: <img src="https://latex.codecogs.com/gif.latex?\inline&space;-\tau_i\Sigma{CTE}" />
-* D: <img src="https://latex.codecogs.com/gif.latex?\inline&space;-\tau_d\frac{d}{dt}CTE" />
+In the above equation, CTE stands for cross track error, P (proportional) component is <img src="https://latex.codecogs.com/gif.latex?\inline&space;-\tau_pCTE" />, I (integral) component is <img src="https://latex.codecogs.com/gif.latex?\inline&space;-\tau_i\Sigma{CTE}" />, and D (derivative) component is <img src="https://latex.codecogs.com/gif.latex?\inline&space;-\tau_d\frac{d}{dt}CTE" />. 
 
 ### Describe how the final hyperparameters were chosen
