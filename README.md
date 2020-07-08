@@ -106,12 +106,25 @@ First of all, PID controller in my implementation uses the following equation to
 
 In the above equation, CTE stands for cross track error, P (proportional) component is <img src="https://latex.codecogs.com/gif.latex?\inline&space;-\tau_pCTE" />, I (integral) component is <img src="https://latex.codecogs.com/gif.latex?\inline&space;-\tau_i\Sigma{CTE}" />, and D (derivative) component is <img src="https://latex.codecogs.com/gif.latex?\inline&space;-\tau_d\frac{d}{dt}CTE" />. Hyperparameters for PID controller are represented as <img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_p" />, <img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_i" />, and <img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_d" />. I will describe the effect of the P, I, D component in my implementation in the following.
 
-P component will give a direct feedback from current CTE to the steering angle. So, if you want the ego to make a sharp curve, you should set a bigger value to <img src="https://latex.codecogs.com/gif.latex?\inline&space;-\tau_p" />. However, CTE will not converge with only P component. as you can see in winding move of the ego in the following video.
+P component will give a direct feedback from current CTE to the steering angle. So, if you want the ego to make a sharp curve, you should set a bigger value to <img src="https://latex.codecogs.com/gif.latex?\inline&space;-\tau_p" />. However, CTE will not converge with only P component. as you can see in winding move of the ego in the following video. In the video, <img src="https://latex.codecogs.com/gif.latex?\inline&space;-\tau_p" /> is set to 0.06.
 
 [![Watch the video](image/p006.png)](https://youtu.be/O8rPH1UAxZ8)
 
-D component has the effect to cancel sudden change of the steering angle. For example, if you set a bigger <img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_p" />, the ego can make a quick curve but it's winding behavior becomes larger. You can reduce this winding behavior by setting appropriate <img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_d" /> and make the ego can run along the course as shown in the following video.
+D component has the effect to cancel sudden change of the steering angle. For example, if you set a bigger <img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_p" />, the ego can make a quick curve but it's winding behavior becomes larger. You can reduce this winding behavior by setting appropriate <img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_d" /> and make the ego can run along the course as shown in the following video. In the video, <img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_d" /> is set to 0.90.
 
 [![Watch the video](image/p006d090.png)](https://youtu.be/1tZxnznJi2s)
 
+I component has the effect to reduce cumulative CTE, which will help the ego run the center of the lane during curves and adjust the bias of steering. Compared to P and I components, this component has the least impact on ego's trajectory, but very important to make smooth trajectory especially in a curve. In the following video, I set <img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_i" />  to 0.002. If you compare this video and previous video at around 54 seconds, you will see how I component works.
+
+[![Watch the video](image/p006i0002d090.png)](https://youtu.be/J5G5riYrAyQ)
+
 ### Describe how the final hyperparameters were chosen
+
+I did a manual hyperparameter tuning, and choose P=0.09, I=0.002, D=1.5 as a final hyperparameter. I didn't use any quantative metric during the hyperparameter tuning (e.g. cumulative CTE error after certain number of simulation ticks). Instead, I manually checked if the ego run along and no tire leave the drivable portion of the track surface. I tuned hyperparaemters in the following 2 steps.
+
+First, I tried to find parameter sets which enable the ego run along the course by changing component P and D. To do this, I made an assumption that <img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_p" /> and <img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_d" /> have linear relationship. I actually reused the ratio of <img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_p" /> and <img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_d" /> which is 1:15, used in the lesson 12-7 (PD controller section). In hyperparameter tuning, I first started at (<img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_p" />, <img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_d" />) = (0.001, 0.015) and increased P logarithmically, and keep the same ratio of <img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_p" /> and <img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_d" />. After these trials, I found the ego can run along the course with (<img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_p" />, <img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_d" />) = (0.1, 1.5). However, with this parameter set, ego's jerk is little bit big, so I decreased P by 0.01 and found (<img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_p" />, <img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_d" />) = (0.08, 1.2) will give the ego more smooth trajectory.
+
+[![Watch the video](image/p008d12.png)](https://youtu.be/YbozR_KNyyU)
+
+
+[![Watch the video](image/p008i0003d12.png)](https://youtu.be/1X3sX5307q0)
