@@ -106,10 +106,12 @@ First of all, PID controller in my implementation uses the following equation to
 
 In the above equation, CTE stands for cross track error, P (proportional) component is <img src="https://latex.codecogs.com/gif.latex?\inline&space;-\tau_pCTE" />, I (integral) component is <img src="https://latex.codecogs.com/gif.latex?\inline&space;-\tau_i\Sigma{CTE}" />, and D (derivative) component is <img src="https://latex.codecogs.com/gif.latex?\inline&space;-\tau_d\frac{d}{dt}CTE" />. Hyperparameters for PID controller are represented as <img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_p" />, <img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_i" />, and <img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_d" />. I will describe the effect of the P, I, D component in my implementation in the following.
 
-P component will give a direct feedback from current CTE to the steering angle. So, if you want the ego to make a sharp curve, you should set a bigger value to <img src="https://latex.codecogs.com/gif.latex?\inline&space;-\tau_p" />. However, as you can see in winding move of the ego in the following video, CTE will not converge with only P component.
+P component will give a direct feedback from current CTE to the steering angle. So, if you want the ego to make a sharp curve, you should set a bigger value to <img src="https://latex.codecogs.com/gif.latex?\inline&space;-\tau_p" />. However, CTE will not converge with only P component. as you can see in winding move of the ego in the following video.
 
-[![Watch the video](image/p01.png)](video/p01.webm)
+[![Watch the video](image/p006.png)](https://youtu.be/O8rPH1UAxZ8)
 
-I component has the effect to reduce cumulative CTE.
+D component has the effect to cancel sudden change of the steering angle. For example, if you set a bigger <img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_p" />, the ego can make a quick curve but it's winding behavior becomes larger. You can reduce this winding behavior by setting appropriate <img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_d" /> and make the ego can run along the course as shown in the following video.
+
+[![Watch the video](image/p006d090.png)](https://youtu.be/1tZxnznJi2s)
 
 ### Describe how the final hyperparameters were chosen
