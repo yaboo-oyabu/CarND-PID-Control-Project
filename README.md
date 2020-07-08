@@ -104,9 +104,11 @@ First of all, PID controller in my implementation uses the following equation to
 
 <img src="https://latex.codecogs.com/gif.latex?Steer&space;=&space;-&space;\tau_pCTE&space;-&space;\tau_i\Sigma{CTE}&space;-&space;\tau_d\frac{d}{dt}CTE"/>
 
-In the above equation, CTE stands for cross track error, P (proportional) component is <img src="https://latex.codecogs.com/gif.latex?\inline&space;-\tau_pCTE" />, I (integral) component is <img src="https://latex.codecogs.com/gif.latex?\inline&space;-\tau_i\Sigma{CTE}" />, and D (derivative) component is <img src="https://latex.codecogs.com/gif.latex?\inline&space;-\tau_d\frac{d}{dt}CTE" />. <img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_p" />, <img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_i" />, and <img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_d" /> are hyper parameters for PID controller. I will describe the effect of the P, I, D component inmy implementation in the following.
+In the above equation, CTE stands for cross track error, P (proportional) component is <img src="https://latex.codecogs.com/gif.latex?\inline&space;-\tau_pCTE" />, I (integral) component is <img src="https://latex.codecogs.com/gif.latex?\inline&space;-\tau_i\Sigma{CTE}" />, and D (derivative) component is <img src="https://latex.codecogs.com/gif.latex?\inline&space;-\tau_d\frac{d}{dt}CTE" />. Hyperparameters for PID controller are represented as <img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_p" />, <img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_i" />, and <img src="https://latex.codecogs.com/gif.latex?\inline&space;\tau_d" />. I will describe the effect of the P, I, D component in my implementation in the following.
 
-P component will give a direct feedback based on current CTE to the steering angle. So, <img src="https://latex.codecogs.com/gif.latex?\inline&space;-\tau_p" /> should be bigger if you want to make a sharp curve. However, bigger <img src="https://latex.codecogs.com/gif.latex?\inline&space;-\tau_p" /> leads 
+P component will give a direct feedback from current CTE to the steering angle. So, if you want the ego to make a sharp curve, you should set a bigger value to <img src="https://latex.codecogs.com/gif.latex?\inline&space;-\tau_p" />. However, as you can see in winding move of the ego in the following video, CTE will not converge with only P component.
+
+[![Watch the video](image/p01.png)](video/p01.webm)
 
 I component has the effect to reduce cumulative CTE.
 
